@@ -8,3 +8,6 @@ class State(StatesGroup):
     level1 = State()
     level2 = State()
     level3 = State()
+    level1_warn = State()
+    level2_warn = State()
+    level3_warn = State()

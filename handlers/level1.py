@@ -8,6 +8,23 @@ import checkers
 import tables
 
 
+@dp.message_handler(state=State.level1_warn)
+async def send_welcome(message: types.Message, state: FSMContext):
+    if message.text == texts.yes_btn:
+        data = await state.get_data()
+        score_1 =  data.get('score_1') 
+        await message.answer(texts.generate_score(score_1), reply_markup=kb.levels_kb)
+        await State.entering_level.set()
+        if len(data.get('levels')) == 3:
+            await message.answer(texts.end)
+        await tables.change_score(message.from_user.id, score_1, 1)
+        return
+    else:
+        await message.answer(texts.continue_task, reply_markup=kb.cancel_level_kb)
+        await State.level1.set()
+
+
+
 @dp.message_handler(regexp=texts.level1_btn, state=State.entering_level)
 async def send_welcome(message: types.Message, state: FSMContext):
     data = await state.get_data()
@@ -26,14 +43,18 @@ async def send_welcome(message: types.Message, state: FSMContext):
     ans = message.text
 
     if ans == texts.cancel_level_btn:
-        data = await state.get_data()
-        score_1 =  data.get('score_1') 
-        await message.answer(texts.generate_score(score_1), reply_markup=kb.levels_kb)
-        await State.entering_level.set()
-        if len(data.get('levels')) == 3:
-            await message.answer(texts.end)
-        await tables.change_score(message.from_user.id, score_1, 1)
+        await message.answer(texts.warning, reply_markup=kb.yes_no_kb)
+        await State.level1_warn.set()
         return
+
+        # data = await state.get_data()
+        # score_1 =  data.get('score_1') 
+        # await message.answer(texts.generate_score(score_1), reply_markup=kb.levels_kb)
+        # await State.entering_level.set()
+        # if len(data.get('levels')) == 3:
+        #     await message.answer(texts.end)
+        # await tables.change_score(message.from_user.id, score_1, 1)
+        # return
 
     if checkers.check_level_1(ans):
         await message.answer(texts.level1_complete1)

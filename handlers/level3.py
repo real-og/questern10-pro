@@ -8,6 +8,22 @@ import checkers
 import tables
 
 
+@dp.message_handler(state=State.level3_warn)
+async def send_welcome(message: types.Message, state: FSMContext):
+    if message.text == texts.yes_btn:
+        data = await state.get_data()
+        score_3 =  data.get('score_3') 
+        await message.answer(texts.generate_score(score_3), reply_markup=kb.levels_kb)
+        await State.entering_level.set()
+        if len(data.get('levels')) == 3:
+            await message.answer(texts.end)
+        await tables.change_score(message.from_user.id, score_3, 3)
+        return
+    else:
+        await message.answer(texts.continue_task, reply_markup=kb.cancel_level_kb)
+        await State.level3.set()
+
+
 @dp.message_handler(regexp=texts.level3_btn, state=State.entering_level)
 async def send_welcome(message: types.Message, state: FSMContext):
     data = await state.get_data()
@@ -26,15 +42,19 @@ async def send_welcome(message: types.Message, state: FSMContext):
 async def send_welcome(message: types.Message, state: FSMContext):
     ans = message.text
 
+
     if ans == texts.cancel_level_btn:
-        data = await state.get_data()
-        score_3 = data.get('score_3') 
-        await message.answer(texts.generate_score(score_3), reply_markup=kb.levels_kb)
-        await State.entering_level.set()
-        if len(data.get('levels')) == 3:
-            await message.answer(texts.end)
-        await tables.change_score(message.from_user.id, score_3, 3)
+        await message.answer(texts.warning, reply_markup=kb.yes_no_kb)
+        await State.level3_warn.set()
         return
+        # data = await state.get_data()
+        # score_3 = data.get('score_3') 
+        # await message.answer(texts.generate_score(score_3), reply_markup=kb.levels_kb)
+        # await State.entering_level.set()
+        # if len(data.get('levels')) == 3:
+        #     await message.answer(texts.end)
+        # await tables.change_score(message.from_user.id, score_3, 3)
+        # return
 
     if ans.lower() in checkers.level3_anses:
         index = checkers.level3_anses.index(ans.lower())

@@ -33,7 +33,7 @@ async def change_score(id, score, level):
     if cell is None:
         return
     row_number = cell.row
-    await sheet.update_cell(row_number, 4 + level, score)
+    await sheet.update_cell(row_number, 3 + level, score)
 
 async def change_name(id, name):
     sheet = await get_sheet()
@@ -41,5 +41,5 @@ async def change_name(id, name):
     if cell is None:
         return
     row_number = cell.row
-    await sheet.update_cell(row_number, 4, name)
+    await sheet.update_cell(row_number, 3, name)
 

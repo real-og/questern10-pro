@@ -15,3 +15,7 @@ levels_kb = ReplyKeyboardMarkup([[texts.level1_btn, texts.level2_btn, texts.leve
 cancel_level_kb = ReplyKeyboardMarkup([[texts.cancel_level_btn]],
                                      resize_keyboard=True,
                                      one_time_keyboard=True)
+
+yes_no_kb = ReplyKeyboardMarkup([[texts.yes_btn, texts.no_btn]],
+                                     resize_keyboard=True,
+                                     one_time_keyboard=True)
