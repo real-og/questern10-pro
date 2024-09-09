@@ -6,3 +6,5 @@ class State(StatesGroup):
     entering_begin_button = State()
     entering_level = State()
     level1 = State()
+    level2 = State()
+    level3 = State()
